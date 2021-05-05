@@ -1,0 +1,40 @@
+
+WizardWalkOnRight.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+WalkOnRight1
+ rotate: false
+ xy: 42, 1
+ size: 17, 36
+ orig: 17, 36
+ offset: 0, 0
+ index: -1
+WalkOnRigth2
+  rotate: false
+  xy: 22, 1
+  size: 18, 36
+  orig: 18, 36
+  offset: 0, 0
+  index: -1
+  WalkOnRigth3
+    rotate: false
+    xy: 22, 1
+    size: 18, 36
+    orig: 18, 36
+    offset: 0, 0
+    index: -1
+WalkOnRigth4
+  rotate: false
+  xy: 1, 1
+  size: 19, 36
+  orig: 19, 36
+  offset: 0, 0
+  index: -1
+WalkOnRigth5
+  rotate: false
+  xy: 22, 1
+  size: 18, 36
+  orig: 18, 36
+  offset: 0, 0
+  index: -1

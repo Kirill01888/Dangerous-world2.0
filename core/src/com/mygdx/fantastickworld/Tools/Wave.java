@@ -41,7 +41,7 @@ public class Wave {
         if (waveNumber > 0)maxRang = 5;
 
         for (int i = 0; i < enemies; i++) {
-            GameSc.enemies.add(new Enemy(Main.enemy, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), (int) (Math.random() * maxRang)));
+            GameSc.enemies.add(new Enemy(Main.enemy, new Point2D( 300 +(float)(Math.random() * 2000) ,200 + (float)(Math.random() * 2000)  ) , (int) (Math.random() * maxRang)));
         }
     }
 }

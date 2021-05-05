@@ -12,4 +12,8 @@ public class BulletGenerator {
 
         if (isFire) GameSc.bullets.add(new Bullet(Main.bullet,new Point2D(GameSc.player.position.getX() +40, GameSc.player.position.getY() + 40),25,GameSc.player.R,joy.getDir()));
     }
+
+    public void dispose() {
+        GameSc.bulgen.dispose();
+    }
 }

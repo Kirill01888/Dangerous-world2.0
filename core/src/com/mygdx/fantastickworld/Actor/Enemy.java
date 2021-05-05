@@ -2,6 +2,7 @@ package com.mygdx.fantastickworld.Actor;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.fantastickworld.Main;
 import com.mygdx.fantastickworld.Tools.Circle;
 import com.mygdx.fantastickworld.Tools.Point2D;
@@ -32,9 +33,9 @@ public class Enemy extends Actor {
     @Override
     public void update() {
         if (position.getX() + R > 3000) direction.setX(-direction.getX());
-        if (position.getX() - R < 0) direction.setX(-direction.getX());
+        if (position.getX() - R < -50) direction.setX(-direction.getX());
         if (position.getY() + R > 3000) direction.setY(-direction.getY());
-        if (position.getY() - R < 0) direction.setY(-direction.getY());
+        if (position.getY() - R < -50) direction.setY(-direction.getY());
 
         position.add(direction.getX() * speed,direction.getY() * speed);
         bounds.pos.setPoint(position);

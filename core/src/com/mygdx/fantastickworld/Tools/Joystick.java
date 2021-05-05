@@ -60,4 +60,11 @@ public class Joystick {
         return direction;
     }
 
+    public Circle getStickBounds() {
+        return StickBounds;
+    }
+
+    public void dispose() {
+        GameSc.joystick.dispose();
+    }
 }

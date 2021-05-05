@@ -1,6 +1,7 @@
 package com.mygdx.fantastickworld.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.fantastickworld.screen.GameSc;
 
 import java.util.Stack;
 
@@ -26,5 +27,9 @@ public class GameStateManager {
     }
     public void render(SpriteBatch batch){
         states.peek().render(batch);
+    }
+
+    public void dispose() {
+        GameSc.gameStateManager.dispose();
     }
 }

@@ -15,7 +15,6 @@ public class MenuState extends State{
     private Texture backGround;
     private BitmapFont bitmapFont1,bitmapFont2;
     private GlyphLayout gl1,gl2;
-    private FreeTypeFontGenerator fontGenerator,fontGenerator2;
 
     public MenuState( GameStateManager gsm) {
         super(gsm);

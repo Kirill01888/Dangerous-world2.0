@@ -3,6 +3,7 @@ package com.mygdx.fantastickworld.Tools;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.fantastickworld.Actor.Player;
+import com.mygdx.fantastickworld.screen.GameSc;
 
 public class Joystick2 {
 
@@ -56,4 +57,7 @@ public class Joystick2 {
         return direction;
     }
 
+    public void dispose() {
+        GameSc.joystick2.dispose();
+    }
 }

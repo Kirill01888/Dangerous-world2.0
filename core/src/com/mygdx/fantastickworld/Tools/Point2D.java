@@ -21,7 +21,6 @@ public class Point2D {
         this.y = y;
     }
 
-
     public float getX() {
         return x;
     }
