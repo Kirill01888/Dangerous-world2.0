@@ -3,6 +3,7 @@ package com.mygdx.fantastickworld.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -23,6 +24,7 @@ import com.mygdx.fantastickworld.Tools.Joystick;
 import com.mygdx.fantastickworld.Tools.Joystick2;
 import com.mygdx.fantastickworld.Tools.Point2D;
 import com.mygdx.fantastickworld.Tools.Wave;
+import com.mygdx.fantastickworld.states.GameOverState;
 import com.mygdx.fantastickworld.states.GameStateManager;
 import com.mygdx.fantastickworld.states.MenuState;
 import com.mygdx.fantastickworld.states.State;
@@ -43,11 +45,8 @@ public class GameSc extends State implements Screen {
     private FreeTypeFontGenerator fontGenerator;
     private long startTime;
     private int second;
-    private int minute = 0;
-    //private TextureAtlas WizardWalkOnRight;
     private Animation WizardWalkOnRightAnimation;
-    //private float timePassedWWOR = 0;
-    private Rectangle rectangle;
+    private Sound fireSound;
    // private Array<Player> playerArray;
 
     public GameSc(Main main) {
@@ -132,10 +131,8 @@ public class GameSc extends State implements Screen {
         bulgen = new BulletGenerator();
         enemies = new Array<>();
         bullets = new Array<>();
-        //playerArray = new Array<>();
-        //playerArray.add(player = new Player(Main.WalkOnRight1, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-        player = new Player(Main.WalkOnRight1, new Point2D(Main.WIDTH/2,Main.HEIGHT/2), 10, Main.HEIGHT / 10, 20, 0);
-        WizardWalkOnRightAnimation = new Animation(new TextureRegion(Main.WalkOnRight1), 5, 0.5f);
+        fireSound = Gdx.audio.newSound(Gdx.files.internal("sound_3964d.mp3"));
+        player = new Player(Main.WalkOnBot1, new Point2D(Main.WIDTH/2,Main.HEIGHT/2), 10, Main.HEIGHT / 10, 20, 0);
         //WizardWalkOnRight = new TextureAtlas("WizardWalkOnRight.atlas");
         //WizardWalkOnRightAnimation = new Animation(1 / 30f, WizardWalkOnRight.getRegions());
         joystick = new Joystick(Main.circle, Main.actor, Main.HEIGHT / 3, player);
@@ -161,8 +158,10 @@ public class GameSc extends State implements Screen {
     public void GameUpdate() {
         player.setDirection(joystick.getDir());
         player.update();
-        WizardWalkOnRightAnimation.update(1f);
         bulgen.update(joystick2);
+        /*if (player.getHealth() < 1){
+            gameStateManager.set(new GameOverState(gameStateManager));
+        }*/
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update();
             if (bullets.get(i).isOut) {

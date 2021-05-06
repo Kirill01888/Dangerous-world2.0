@@ -14,28 +14,20 @@ public class Player extends Actor {
 
     private int score;
     private float health;
-    private Animation animation;
-    private Rectangle rectangle;
-    private Texture texture;
 
     public Player(Texture img, Point2D position, float speed, float R, float health,int score) {
         super(img, position, speed, R);
-        Point2D point2D = position;
-        texture = new Texture("Sprites_wizard2.2.png");
-        animation = new Animation(new TextureRegion(img),5,1f);
-        rectangle = new Rectangle(Main.WalkOnRight1.getWidth() / 5,Main.WalkOnRight1.getHeight());
         this.health = health;
         this.score = score;
     }
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, position.getX() - R, position.getY() - R, rectangle.width * 5, rectangle.height * 5);
+        batch.draw(img, position.getX() - R, position.getY() - R, 200, 200);
     }
 
     @Override
     public void update() {
-        animation.update(0.5f);
         if (position.getX() + R > 3000) position.setX(3000 - R);
         if (position.getX() - R < 0) position.setX(R);
         if (position.getY() + R > 3000) position.setY(3000 - R);
