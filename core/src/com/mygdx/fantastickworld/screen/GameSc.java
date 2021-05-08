@@ -17,6 +17,10 @@ import com.mygdx.fantastickworld.Actor.Bullet;
 import com.mygdx.fantastickworld.Actor.Enemy;
 import com.mygdx.fantastickworld.Actor.Player;
 import com.mygdx.fantastickworld.Main;
+import com.mygdx.fantastickworld.PowerUps.HealthBonus;
+import com.mygdx.fantastickworld.PowerUps.HealthBonusGenerator;
+import com.mygdx.fantastickworld.PowerUps.SpeedBonus;
+import com.mygdx.fantastickworld.PowerUps.SpeedBonusGenerator;
 import com.mygdx.fantastickworld.Tools.Animation;
 import com.mygdx.fantastickworld.Tools.BulletGenerator;
 import com.mygdx.fantastickworld.Tools.Joystick;
@@ -33,6 +37,8 @@ public class GameSc implements Screen {
     public static com.badlogic.gdx.utils.Array<Bullet> bullets;
     public static BulletGenerator bulgen;
     public static Array<Enemy> enemies;
+    public static Array<HealthBonus> healthBonuses;
+    public static Array<SpeedBonus> speedBonus;
     public static Wave wave;
     private BitmapFont scoreFont, healthFont, timeFont;
     private GlyphLayout glyphLayout1, glyphLayout2, gl3;
@@ -40,7 +46,9 @@ public class GameSc implements Screen {
     private long startTime;
     public static int second;
     private Sound fireSound;
-    public static Animation animationWalkOnRight,animationWalkOnLeft,enemyAnimationOnRight,enemyAnimationOnLeft,animation;
+    public static Animation animationWalkOnRight, animationWalkOnLeft, enemyAnimationOnRight, enemyAnimationOnLeft, animation;
+    public HealthBonusGenerator healthBonusGenerator;
+    public SpeedBonusGenerator speedBonusGenerator;
 
     public GameSc(Main main) {
         this.main = main;
@@ -123,13 +131,17 @@ public class GameSc implements Screen {
         bulgen = new BulletGenerator();
         enemies = new Array<>();
         bullets = new Array<>();
+        speedBonus = new Array<>();
+        speedBonusGenerator = new SpeedBonusGenerator(30);
+        healthBonuses = new Array<>();
+        healthBonusGenerator = new HealthBonusGenerator(30);
         fireSound = Gdx.audio.newSound(Gdx.files.internal("sound_3964d.mp3"));
-        animation = new Animation(new TextureRegion(Main.animation),4,10f);
-        enemyAnimationOnLeft = new Animation(new TextureRegion(Main.monsterWalkOnLeft),10,1f);
-        enemyAnimationOnRight = new Animation(new TextureRegion(Main.monsterWalkOnRight),10,1f);
-        animationWalkOnRight = new Animation(new TextureRegion(Main.wizardWalkOnRight),5,0.5f);
-        animationWalkOnLeft = new Animation(new TextureRegion(Main.wizardWalkOnLeft),5,0.5f);
-        player = new Player(Main.wizardWalkOnRight, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 20, Main.HEIGHT / 10, 100, 0, animationWalkOnRight);
+        animation = new Animation(new TextureRegion(Main.animation), 4, 10f);
+        enemyAnimationOnLeft = new Animation(new TextureRegion(Main.monsterWalkOnLeft), 10, 1f);
+        enemyAnimationOnRight = new Animation(new TextureRegion(Main.monsterWalkOnRight), 10, 1f);
+        animationWalkOnRight = new Animation(new TextureRegion(Main.wizardWalkOnRight), 5, 0.5f);
+        animationWalkOnLeft = new Animation(new TextureRegion(Main.wizardWalkOnLeft), 5, 0.5f);
+        player = new Player(Main.wizardWalkOnRight, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 15, Main.HEIGHT / 10, 100, 0, animationWalkOnRight);
         joystick = new Joystick(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         joystick2 = new Joystick2(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         wave = new Wave(1, 1, 1);
@@ -167,8 +179,8 @@ public class GameSc implements Screen {
         }
         collision();
         wave.update();
-        if (player.getHealth() < 1){
-             main.setScreen(new GameOverState(main));
+        if (player.getHealth() < 1) {
+            main.setScreen(new GameOverState(main));
         }
         playerSideUpdate(joystick);
         animation.update(delta);
@@ -176,6 +188,8 @@ public class GameSc implements Screen {
         animationWalkOnLeft.update(delta);
         enemyAnimationOnRight.update(delta);
         enemyAnimationOnLeft.update(delta);
+        healthBonusGenerator.update();
+        speedBonusGenerator.update()
     }
 
     public void GameRender(SpriteBatch batch) {
@@ -185,6 +199,12 @@ public class GameSc implements Screen {
         }
         for (int i = 0; i < enemies.size; i++) {
             enemies.get(i).draw(batch);
+        }
+        for (int i = 0; i < healthBonuses.size; i++) {
+            healthBonuses.get(i).draw(batch);
+        }
+        for (int i = 0; i < speedBonus.size; i++) {
+            speedBonus.get(i).draw(batch);
         }
         joystick.draw(batch, player);
         joystick2.draw2(batch, player);
@@ -230,22 +250,48 @@ public class GameSc implements Screen {
         }
         for (int i = 0; i < enemies.size; i++) {
             if (player.bounds.Overlaps(enemies.get(i).bounds)) {
-                player.setHealth(0.5f);
+                player.setHealth(1);
+            }
+        }
+        for (int i = 0; i < healthBonuses.size; i++) {
+            if (player.bounds.Overlaps(healthBonuses.get(i).getBounds())) {
+                player.addHealth(20);
+                healthBonuses.removeIndex(i);
+            }
+        }
+        for (int i = 0; i < speedBonus.size; i++) {
+            if (player.bounds.Overlaps(speedBonus.get(i).getBounds())) {
+                player.setSpeed(1);
+                speedBonus.removeIndex(i);
             }
         }
     }
 
     public void playerSideUpdate(Joystick joystick) {
         if (joystick.getDir().x > 0) {
-         player.setAnimation(animationWalkOnRight);
+            player.setAnimation(animationWalkOnRight);
         }
         if (joystick.getDir().x < 0) {
             player.setAnimation(animationWalkOnLeft);
         }
-        if (joystick.getDir().x == 0 && joystick.getDir().y == 0){
+        if (joystick.getDir().x == 0 && joystick.getDir().y == 0) {
             player.setAnimation(animation);
         }
     }
+
+    /*public void soundUpdate() {
+        boolean isPlay = false;
+        if (joystick2.getDir().y != 0 && joystick2.getDir().x != 0) {
+            isPlay = true;
+            while (isPlay) {
+                fireSound.loop();
+                if (joystick2.getDir().y == 0 && joystick2.getDir().x == 0){
+                    isPlay = false;
+                    fireSound.stop();
+                }
+            }
+        }
+    }*/
 
     @Override
     public void resize(int width, int height) {
@@ -280,5 +326,6 @@ public class GameSc implements Screen {
         fontGenerator.dispose();
         main.dispose();
         animationWalkOnRight.dispose();
+        fireSound.dispose();
     }
 }

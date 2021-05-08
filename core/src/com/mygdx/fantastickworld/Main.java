@@ -19,7 +19,7 @@ public class Main extends Game {
     public static OrthographicCamera camera;
     public static Texture place, bullet, enemy, place2,
             monsterWalkOnRight, monsterWalkOnLeft, wizardWalkOnLeft,
-            wizardWalkOnRight, animation;
+            wizardWalkOnRight, animation, healthBonus,speedBonus;
     private Music backgroundMusic;
 
     @Override
@@ -32,6 +32,8 @@ public class Main extends Game {
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.2f);
         backgroundMusic.play();
+        speedBonus = new Texture("wing.png");
+        healthBonus = new Texture("healthBonus.png");
         animation = new Texture("animation.png");
         wizardWalkOnLeft = new Texture("wizardWalkOnLeft.png");
         wizardWalkOnRight = new Texture("wizardWalkOnRight.png");

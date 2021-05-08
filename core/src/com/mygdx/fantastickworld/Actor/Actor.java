@@ -33,4 +33,7 @@ public abstract class Actor extends GraphicsObj {
         direction = dir;
     }
 
+    public void setSpeed(float speed) {
+        this.speed += speed;
+    }
 }

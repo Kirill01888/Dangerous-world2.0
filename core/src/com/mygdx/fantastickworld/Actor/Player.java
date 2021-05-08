@@ -13,10 +13,10 @@ import java.awt.Rectangle;
 public class Player extends Actor {
 
     private int score;
-    private float health;
+    private int health;
     private Animation animation;
 
-    public Player(Texture img, Point2D position, float speed, float R, float health,int score,Animation animation) {
+    public Player(Texture img, Point2D position, float speed, float R, int health,int score,Animation animation) {
         super(img, position, speed, R);
         this.health = health;
         this.score = score;
@@ -50,8 +50,11 @@ public class Player extends Actor {
         this.score += score;
     }
 
-    public void setHealth(float health) {
+    public void setHealth(int health) {
         this.health -= health;
+    }
+    public void addHealth(int health){
+        this.health += health;
     }
 
     public void dispose() {
@@ -61,4 +64,6 @@ public class Player extends Actor {
     public void setAnimation(Animation animation) {
         this.animation = animation;
     }
+
+
 }
