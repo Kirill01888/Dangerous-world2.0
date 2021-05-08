@@ -36,12 +36,14 @@ public class Wave {
     public void setEnemy(){
         int enemies = minEnemy + waveNumber * 2;
 
-        int maxRang = 5;
-        if (waveNumber > 0)maxRang = 4;
-        if (waveNumber > 0)maxRang = 5;
+        int maxRang = 1;
+        if (waveNumber > 5)maxRang = 2;
+        if (waveNumber > 10)maxRang = 3;
+        if (waveNumber > 15)maxRang = 4;
+        if (waveNumber > 20)maxRang = 5;
 
         for (int i = 0; i < enemies; i++) {
-            GameSc.enemies.add(new Enemy(Main.enemy, new Point2D( 300 +(float)(Math.random() * 2000) ,200 + (float)(Math.random() * 2000)  ) , (int) (Math.random() * maxRang)));
+            GameSc.enemies.add(new Enemy(Main.enemy, new Point2D( 300 +(float)(Math.random() * 2000) ,200 + (float)(Math.random() * 2000)  ) , (int) (Math.random() * maxRang),GameSc.enemyAnimationOnRight));
         }
     }
 }

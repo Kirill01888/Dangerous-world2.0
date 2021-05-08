@@ -7,7 +7,7 @@ import com.mygdx.fantastickworld.GraphicsObj.GraphicsObj;
 import com.mygdx.fantastickworld.Tools.Circle;
 import com.mygdx.fantastickworld.Tools.Point2D;
 
-public abstract class  Actor extends GraphicsObj {
+public abstract class Actor extends GraphicsObj {
 
     public Point2D position;
     public float speed,R;

@@ -1,22 +1,23 @@
-package com.mygdx.fantastickworld.states;
+package com.mygdx.fantastickworld.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.mygdx.fantastickworld.screen.GameSc;
+import com.mygdx.fantastickworld.Main;
 
-public class MenuState extends State {
+public class MenuState implements Screen {
 
+    private Main main;
     private Texture backGround;
     private BitmapFont bitmapFont1, bitmapFont2;
     private GlyphLayout gl1, gl2;
 
-    public MenuState(GameStateManager gsm) {
-        super(gsm);
+    public MenuState(Main main) {
+        this.main = main;
         backGround = new Texture("place2.png");
         bitmapFont1 = new BitmapFont();
         bitmapFont2 = new BitmapFont();
@@ -37,28 +38,34 @@ public class MenuState extends State {
     }
 
     @Override
-    protected void handleInput() {
+    public void show() {}
+
+    @Override
+    public void render(float delta) {
+        Main.batch.begin();
+        Main.batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bitmapFont1.draw(Main.batch, gl1, Gdx.graphics.getWidth() / 2 - gl1.width / 2, Gdx.graphics.getHeight() - gl1.height);
+        bitmapFont2.draw(Main.batch, gl2, Gdx.graphics.getWidth() / 2 - gl2.width / 2, Gdx.graphics.getHeight() / 4);
+        Main.batch.end();
         if (Gdx.input.justTouched()) {
-            gsm.set(new GameSc(GameSc.main));
+            main.setScreen(new GameSc(main));
         }
     }
 
     @Override
-    public void update() {
-        handleInput();
-    }
-
+    public void resize(int width, int height) {}
     @Override
-    public void render(SpriteBatch batch) {
-        batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        bitmapFont1.draw(batch, gl1, Gdx.graphics.getWidth() / 2 - gl1.width / 2, Gdx.graphics.getHeight() - gl1.height);
-        bitmapFont2.draw(batch, gl2, Gdx.graphics.getWidth() / 2 - gl2.width / 2, Gdx.graphics.getHeight() / 4);
-    }
+    public void pause(){}
+    @Override
+    public void resume(){}
+    @Override
+    public void hide(){}
 
     @Override
     public void dispose() {
         backGround.dispose();
         bitmapFont2.dispose();
         bitmapFont1.dispose();
+        main.dispose();
     }
 }

@@ -15,7 +15,6 @@ public class Joystick {
     private static float Rcircle, Rstick;
     private Point2D direction;
     private int pointer = -1;
-    private Point2D point2D;
 
     public Joystick(Texture cimg, Texture simg, float Size, Player player) {
         CircleImg = cimg;
@@ -58,10 +57,6 @@ public class Joystick {
 
     public Point2D getDir() {
         return direction;
-    }
-
-    public Circle getStickBounds() {
-        return StickBounds;
     }
 
     public void dispose() {

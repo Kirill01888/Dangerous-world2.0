@@ -14,16 +14,18 @@ public class Player extends Actor {
 
     private int score;
     private float health;
+    private Animation animation;
 
-    public Player(Texture img, Point2D position, float speed, float R, float health,int score) {
+    public Player(Texture img, Point2D position, float speed, float R, float health,int score,Animation animation) {
         super(img, position, speed, R);
         this.health = health;
         this.score = score;
+        this.animation = animation;
     }
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(img, position.getX() - R, position.getY() - R, 200, 200);
+        batch.draw(animation.getFrame(), position.getX() - R, position.getY() - R, 95, 150);
     }
 
     @Override
@@ -34,10 +36,6 @@ public class Player extends Actor {
         if (position.getY() - R < 0) position.setY(R);
         position.add(direction.getX() * speed, direction.getY() * speed);
         bounds.pos.setPoint(position);
-    }
-
-    public void isDeath() {
-        health = 0;
     }
 
     public int getScore() {
@@ -60,5 +58,7 @@ public class Player extends Actor {
         GameSc.player.dispose();
     }
 
-
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
 }

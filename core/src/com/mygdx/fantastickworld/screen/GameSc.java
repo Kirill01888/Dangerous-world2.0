@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.fantastickworld.Actor.Bullet;
@@ -24,30 +23,24 @@ import com.mygdx.fantastickworld.Tools.Joystick;
 import com.mygdx.fantastickworld.Tools.Joystick2;
 import com.mygdx.fantastickworld.Tools.Point2D;
 import com.mygdx.fantastickworld.Tools.Wave;
-import com.mygdx.fantastickworld.states.GameOverState;
-import com.mygdx.fantastickworld.states.GameStateManager;
-import com.mygdx.fantastickworld.states.MenuState;
-import com.mygdx.fantastickworld.states.State;
 
-public class GameSc extends State implements Screen {
+public class GameSc implements Screen {
 
     public static Joystick joystick;
     public static Joystick2 joystick2;
     public static Player player;
-    public static Main main;
+    public Main main;
     public static com.badlogic.gdx.utils.Array<Bullet> bullets;
     public static BulletGenerator bulgen;
     public static Array<Enemy> enemies;
     public static Wave wave;
-    public static GameStateManager gameStateManager;
     private BitmapFont scoreFont, healthFont, timeFont;
     private GlyphLayout glyphLayout1, glyphLayout2, gl3;
     private FreeTypeFontGenerator fontGenerator;
     private long startTime;
-    private int second;
-    private Animation WizardWalkOnRightAnimation;
+    public static int second;
     private Sound fireSound;
-   // private Array<Player> playerArray;
+    public static Animation animationWalkOnRight,animationWalkOnLeft,enemyAnimationOnRight,enemyAnimationOnLeft,animation;
 
     public GameSc(Main main) {
         this.main = main;
@@ -116,7 +109,7 @@ public class GameSc extends State implements Screen {
         Main.camera.update();
         Main.batch.setProjectionMatrix(Main.camera.combined);
         CameraUpdate();
-        GameUpdate();
+        GameUpdate(delta);
     }
 
     public void multitouch(float x, float y, boolean isDownTouch, int pointer) {
@@ -127,17 +120,19 @@ public class GameSc extends State implements Screen {
     }
 
     public void loadActors() {
-        gameStateManager = new GameStateManager();
         bulgen = new BulletGenerator();
         enemies = new Array<>();
         bullets = new Array<>();
         fireSound = Gdx.audio.newSound(Gdx.files.internal("sound_3964d.mp3"));
-        player = new Player(Main.WalkOnBot1, new Point2D(Main.WIDTH/2,Main.HEIGHT/2), 10, Main.HEIGHT / 10, 20, 0);
-        //WizardWalkOnRight = new TextureAtlas("WizardWalkOnRight.atlas");
-        //WizardWalkOnRightAnimation = new Animation(1 / 30f, WizardWalkOnRight.getRegions());
+        animation = new Animation(new TextureRegion(Main.animation),4,10f);
+        enemyAnimationOnLeft = new Animation(new TextureRegion(Main.monsterWalkOnLeft),10,1f);
+        enemyAnimationOnRight = new Animation(new TextureRegion(Main.monsterWalkOnRight),10,1f);
+        animationWalkOnRight = new Animation(new TextureRegion(Main.wizardWalkOnRight),5,0.5f);
+        animationWalkOnLeft = new Animation(new TextureRegion(Main.wizardWalkOnLeft),5,0.5f);
+        player = new Player(Main.wizardWalkOnRight, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 20, Main.HEIGHT / 10, 100, 0, animationWalkOnRight);
         joystick = new Joystick(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         joystick2 = new Joystick2(Main.circle, Main.actor, Main.HEIGHT / 3, player);
-        wave = new Wave(5, 1, 5);
+        wave = new Wave(1, 1, 1);
         startTime = System.currentTimeMillis();
         scoreFont = new BitmapFont();
         healthFont = new BitmapFont();
@@ -152,16 +147,12 @@ public class GameSc extends State implements Screen {
         scoreFont = fontGenerator.generateFont(parameter);
         healthFont = fontGenerator.generateFont(parameter);
         timeFont = fontGenerator.generateFont(parameter);
-        gameStateManager.push(new MenuState(gameStateManager));
     }
 
-    public void GameUpdate() {
+    public void GameUpdate(float delta) {
         player.setDirection(joystick.getDir());
         player.update();
         bulgen.update(joystick2);
-        /*if (player.getHealth() < 1){
-            gameStateManager.set(new GameOverState(gameStateManager));
-        }*/
         for (int i = 0; i < bullets.size; i++) {
             bullets.get(i).update();
             if (bullets.get(i).isOut) {
@@ -176,6 +167,15 @@ public class GameSc extends State implements Screen {
         }
         collision();
         wave.update();
+        if (player.getHealth() < 1){
+             main.setScreen(new GameOverState(main));
+        }
+        playerSideUpdate(joystick);
+        animation.update(delta);
+        animationWalkOnRight.update(delta);
+        animationWalkOnLeft.update(delta);
+        enemyAnimationOnRight.update(delta);
+        enemyAnimationOnLeft.update(delta);
     }
 
     public void GameRender(SpriteBatch batch) {
@@ -188,7 +188,6 @@ public class GameSc extends State implements Screen {
         }
         joystick.draw(batch, player);
         joystick2.draw2(batch, player);
-        //timePassedWWOR += Gdx.graphics.getDeltaTime();
         second = (int) ((System.currentTimeMillis() - startTime) / 1000);
         scoreFont.draw(batch, glyphLayout1, player.position.getX(), player.position.getY() + 500);
         healthFont.draw(batch, glyphLayout2, player.position.getX() - Gdx.graphics.getWidth() / 2, player.position.getY() + 500);
@@ -196,9 +195,6 @@ public class GameSc extends State implements Screen {
         gl3.setText(timeFont, second + "");
         glyphLayout1.setText(scoreFont, player.getScore() + "");
         glyphLayout2.setText(healthFont, player.getHealth() + "");
-        gameStateManager.update(Gdx.graphics.getDeltaTime());
-        gameStateManager.render(batch);
-
     }
 
     public void CameraUpdate() {
@@ -239,38 +235,17 @@ public class GameSc extends State implements Screen {
         }
     }
 
-   /* public void playerSideUpdate(Joystick joystick) {
-        if (joystick.getStickBounds().pos.x > 240.5) {
-            playerArray.removeIndex(0);
-            playerArray.add(player = new Player(Main.WalkOnRight1, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-            playerArray.get(0).update();
+    public void playerSideUpdate(Joystick joystick) {
+        if (joystick.getDir().x > 0) {
+         player.setAnimation(animationWalkOnRight);
         }
-        if (joystick.getStickBounds().pos.x < 240.5) {
-            playerArray.removeIndex(0);
-            playerArray.add(player = new Player(Main.WalkOnLeft1, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-            playerArray.get(0).update();
+        if (joystick.getDir().x < 0) {
+            player.setAnimation(animationWalkOnLeft);
         }
-        if (joystick.getStickBounds().pos.y < 181.75) {
-            playerArray.removeIndex(0);
-            playerArray.add(player = new Player(Main.WalkOnBot1, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-            playerArray.get(0).update();
+        if (joystick.getDir().x == 0 && joystick.getDir().y == 0){
+            player.setAnimation(animation);
         }
-        if (joystick.getStickBounds().pos.y > 181.75) {
-            playerArray.removeIndex(0);
-            playerArray.add(player = new Player(Main.WalkOnTop1, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-            playerArray.get(0).update();
-        }
-        if (joystick.getStickBounds().pos.y < 181.75 && joystick.getStickBounds().pos.x < 240.5){
-            playerArray.removeIndex(0);
-            playerArray.add(player = new Player(Main.walk2, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-            playerArray.get(0).update();
-        }
-        if (joystick.getStickBounds().pos.y < 181.75 && joystick.getStickBounds().pos.x > 240.5){
-            playerArray.removeIndex(0);
-            playerArray.add(player = new Player(Main.walk1, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 10, Main.HEIGHT / 20, 20, 0));
-            playerArray.get(0).update();
-        }
-    }*/
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -293,31 +268,17 @@ public class GameSc extends State implements Screen {
     }
 
     @Override
-    protected void handleInput() {
-
-    }
-
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public void render(SpriteBatch batch) {
-
-    }
-
-    @Override
     public void dispose() {
         player.dispose();
         joystick.dispose();
         joystick2.dispose();
         main.dispose();
         bulgen.dispose();
-        gameStateManager.dispose();
         healthFont.dispose();
         scoreFont.dispose();
         timeFont.dispose();
         fontGenerator.dispose();
+        main.dispose();
+        animationWalkOnRight.dispose();
     }
 }

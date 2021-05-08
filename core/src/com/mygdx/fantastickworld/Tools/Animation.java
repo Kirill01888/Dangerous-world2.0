@@ -2,6 +2,7 @@ package com.mygdx.fantastickworld.Tools;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.fantastickworld.screen.GameSc;
 
 public class Animation {
 
@@ -18,7 +19,7 @@ public class Animation {
             frames.add(new TextureRegion(region, i * frameWidth, 0, frameWidth, region.getRegionHeight()));
         }
         this.frameCount = frameCount;
-        maxFrameTime = cycleTime / frameCount;
+        maxFrameTime = cycleTime / this.frameCount;
         frame = 0;
     }
     public void update(float dt){
@@ -32,5 +33,11 @@ public class Animation {
     }
     public  TextureRegion getFrame(){
         return frames.get(frame);
+    }
+
+    public void dispose() {
+        GameSc.animationWalkOnRight.dispose();
+        GameSc.enemyAnimationOnLeft.dispose();
+        GameSc.enemyAnimationOnRight.dispose();
     }
 }
