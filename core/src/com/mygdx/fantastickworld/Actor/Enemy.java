@@ -13,6 +13,7 @@ public class Enemy extends Actor {
 
     private int health, score, rank;
     private Animation animation;
+    private int hit;
 
     public Enemy(Texture img, Point2D position,int rank,Animation animation) {
         super(img, position);
@@ -27,6 +28,7 @@ public class Enemy extends Actor {
         direction.setX((float) Math.sin(Math.toRadians(Math.random() * 360)));
         direction.setY((float) Math.cos(Math.toRadians(Math.random() * 360)));
         this.animation = animation;
+        this.hit = 1;
     }
 
     @Override
@@ -54,15 +56,20 @@ public class Enemy extends Actor {
         position.add(direction.getX() * speed,direction.getY() * speed);
         bounds.pos.setPoint(position);
     }
-
-    public void hit(){
-        health--;
-    }
     public int getHealth(){
         return health;
     }
-
     public void setAnimation(Animation animation) {
         this.animation = animation;
+    }
+    public void setHit(int hit) {
+        this.hit += hit;
+    }
+    public int getHit() {
+        return hit;
+    }
+    public void hit(){
+        this.hit = GameSc.enemy.getHit();
+        this.health -= hit;
     }
 }

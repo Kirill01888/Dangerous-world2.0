@@ -47,11 +47,12 @@ public class Player extends Actor {
     }
 
     public void setScore(int score) {
+        score = GameSc.enemy.getHit();
         this.score += score;
     }
 
-    public void setHealth(int health) {
-        this.health -= health;
+    public void minusHealth(int hit) {
+        this.health -= hit;
     }
     public void addHealth(int health){
         this.health += health;
@@ -64,6 +65,4 @@ public class Player extends Actor {
     public void setAnimation(Animation animation) {
         this.animation = animation;
     }
-
-
 }

@@ -17,6 +17,8 @@ import com.mygdx.fantastickworld.Actor.Bullet;
 import com.mygdx.fantastickworld.Actor.Enemy;
 import com.mygdx.fantastickworld.Actor.Player;
 import com.mygdx.fantastickworld.Main;
+import com.mygdx.fantastickworld.PowerUps.AttackBonus;
+import com.mygdx.fantastickworld.PowerUps.AttackBonusGenerator;
 import com.mygdx.fantastickworld.PowerUps.HealthBonus;
 import com.mygdx.fantastickworld.PowerUps.HealthBonusGenerator;
 import com.mygdx.fantastickworld.PowerUps.SpeedBonus;
@@ -39,6 +41,7 @@ public class GameSc implements Screen {
     public static Array<Enemy> enemies;
     public static Array<HealthBonus> healthBonuses;
     public static Array<SpeedBonus> speedBonus;
+    public static Array<AttackBonus> attackBonuses;
     public static Wave wave;
     private BitmapFont scoreFont, healthFont, timeFont;
     private GlyphLayout glyphLayout1, glyphLayout2, gl3;
@@ -49,6 +52,8 @@ public class GameSc implements Screen {
     public static Animation animationWalkOnRight, animationWalkOnLeft, enemyAnimationOnRight, enemyAnimationOnLeft, animation;
     public HealthBonusGenerator healthBonusGenerator;
     public SpeedBonusGenerator speedBonusGenerator;
+    public AttackBonusGenerator attackBonusGenerator;
+    public static Enemy enemy;
 
     public GameSc(Main main) {
         this.main = main;
@@ -131,6 +136,9 @@ public class GameSc implements Screen {
         bulgen = new BulletGenerator();
         enemies = new Array<>();
         bullets = new Array<>();
+        enemy = new Enemy(Main.enemy, new Point2D(300 + (float) (Math.random() * 2000), 200 + (float) (Math.random() * 2000)), 1, GameSc.enemyAnimationOnRight);
+        attackBonuses = new Array<>();
+        attackBonusGenerator = new AttackBonusGenerator(10);
         speedBonus = new Array<>();
         speedBonusGenerator = new SpeedBonusGenerator(30);
         healthBonuses = new Array<>();
@@ -189,7 +197,8 @@ public class GameSc implements Screen {
         enemyAnimationOnRight.update(delta);
         enemyAnimationOnLeft.update(delta);
         healthBonusGenerator.update();
-        speedBonusGenerator.update()
+        speedBonusGenerator.update();
+        attackBonusGenerator.update();
     }
 
     public void GameRender(SpriteBatch batch) {
@@ -205,6 +214,9 @@ public class GameSc implements Screen {
         }
         for (int i = 0; i < speedBonus.size; i++) {
             speedBonus.get(i).draw(batch);
+        }
+        for (int i = 0; i < attackBonuses.size; i++) {
+            attackBonuses.get(i).draw(batch);
         }
         joystick.draw(batch, player);
         joystick2.draw2(batch, player);
@@ -238,6 +250,13 @@ public class GameSc implements Screen {
     }
 
     public void collision() {
+        for (int i = 0; i < attackBonuses.size; i++) {
+            if (player.bounds.Overlaps(attackBonuses.get(i).getBounds())){
+                enemy.setHit(1);
+                attackBonuses.removeIndex(i);
+                Gdx.app.log("hit",enemy.getHit() + "");
+            }
+        }
         for (int i = 0; i < bullets.size; i++) {
             for (int j = 0; j < enemies.size; j++) {
                 if (bullets.get(i).bounds.Overlaps(enemies.get(j).bounds)) {
@@ -250,7 +269,7 @@ public class GameSc implements Screen {
         }
         for (int i = 0; i < enemies.size; i++) {
             if (player.bounds.Overlaps(enemies.get(i).bounds)) {
-                player.setHealth(1);
+                player.minusHealth(1);
             }
         }
         for (int i = 0; i < healthBonuses.size; i++) {
