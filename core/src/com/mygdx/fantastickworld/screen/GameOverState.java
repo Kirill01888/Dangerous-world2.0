@@ -2,10 +2,12 @@ package com.mygdx.fantastickworld.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector3;
 import com.mygdx.fantastickworld.Actor.Player;
 import com.mygdx.fantastickworld.Main;
 
@@ -15,10 +17,15 @@ public class GameOverState implements Screen {
     private Texture texture;
     private BitmapFont bitmapFont1, bitmapFont2,bitmapFont3,bitmapFont4;
     private GlyphLayout gl1, gl2,gl3,gl4;
+    private Vector3 vector3;
+    private String score,time;
 
-    public GameOverState(Main main) {
+    public GameOverState(Main main,String ScoreString,String TimeString) {
         this.main = main;
+        this.score = ScoreString;
+        this.time = TimeString;
         texture = new Texture("magma.png");
+        vector3 = new Vector3(Main.camera.position.x = Main.WIDTH / 2,Main.camera.position.y = Main.HEIGHT / 2,Main.camera.position.z = 0);
         bitmapFont1 = new BitmapFont();
         bitmapFont2 = new BitmapFont();
         bitmapFont3 = new BitmapFont();
@@ -39,9 +46,24 @@ public class GameOverState implements Screen {
         bitmapFont2 = fontGenerator2.generateFont(parameter2);
         bitmapFont3 = fontGenerator2.generateFont(parameter2);
         bitmapFont4 = fontGenerator2.generateFont(parameter2);
+        String ScoreInfo,TimeInfo;
+        if (Integer.parseInt(score) > Main.Record){
+            ScoreInfo = "New Record!: " + score;
+            Main.Write(score);
+            Main.Record = Integer.parseInt(score);
+        }else {
+            ScoreInfo = "Record: " + Main.Record;
+        }
+        if (Integer.parseInt(time) > Main.TimeRecord){
+            TimeInfo = "New Time Record!: " + time;
+            Main.Write2(time);
+            Main.TimeRecord = Integer.parseInt(time);
+        }else {
+            TimeInfo = "Time Record: " + Main.TimeRecord;
+        }
         gl1.setText(bitmapFont1, "Game Over");
-        gl2.setText(bitmapFont2, "Score: " + GameSc.player.getScore());
-        gl3.setText(bitmapFont3, "Time: " + GameSc.second);
+        gl2.setText(bitmapFont2, ScoreInfo);
+        gl3.setText(bitmapFont3, TimeInfo);
         gl4.setText(bitmapFont4, "Tap to start");
     }
 
@@ -52,6 +74,10 @@ public class GameOverState implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Main.camera.position.set(vector3);
+        Main.batch.setProjectionMatrix(Main.camera.combined);
+        Main.camera.update();
         Main.batch.begin();
         Main.batch.draw(texture,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         bitmapFont1.draw(Main.batch,gl1,Main.WIDTH / 2 - gl1.width / 2,Main.HEIGHT  - gl1.height);

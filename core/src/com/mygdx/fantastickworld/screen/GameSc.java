@@ -138,9 +138,9 @@ public class GameSc implements Screen {
         bullets = new Array<>();
         enemy = new Enemy(Main.enemy, new Point2D(300 + (float) (Math.random() * 2000), 200 + (float) (Math.random() * 2000)), 1, GameSc.enemyAnimationOnRight);
         attackBonuses = new Array<>();
-        attackBonusGenerator = new AttackBonusGenerator(10);
+        attackBonusGenerator = new AttackBonusGenerator(60);
         speedBonus = new Array<>();
-        speedBonusGenerator = new SpeedBonusGenerator(30);
+        speedBonusGenerator = new SpeedBonusGenerator(60);
         healthBonuses = new Array<>();
         healthBonusGenerator = new HealthBonusGenerator(30);
         fireSound = Gdx.audio.newSound(Gdx.files.internal("sound_3964d.mp3"));
@@ -188,7 +188,9 @@ public class GameSc implements Screen {
         collision();
         wave.update();
         if (player.getHealth() < 1) {
-            main.setScreen(new GameOverState(main));
+            String score = Integer.toString(player.getScore());
+            String time = Integer.toString(second);
+            main.setScreen(new GameOverState(main,score,time));
         }
         playerSideUpdate(joystick);
         animation.update(delta);
@@ -254,7 +256,6 @@ public class GameSc implements Screen {
             if (player.bounds.Overlaps(attackBonuses.get(i).getBounds())){
                 enemy.setHit(1);
                 attackBonuses.removeIndex(i);
-                Gdx.app.log("hit",enemy.getHit() + "");
             }
         }
         for (int i = 0; i < bullets.size; i++) {

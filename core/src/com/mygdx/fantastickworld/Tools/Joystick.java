@@ -31,21 +31,24 @@ public class Joystick {
         batch.draw(StickImg, player.position.x - 900 - (Rstick * 3) + StickBounds.pos.getX() , player.position.y - 375 - (Rstick * 3) + StickBounds.pos.getY(), Rstick * 2, Rstick * 2);
     }
 
-    public void update(float x, float y, boolean isDownTouch, int pointer) {
+    public void update(float x, float y, boolean isDownTouch, int pointer){
         Point2D touch = new Point2D(x, y);
-        if (CircleBounds.isContains(touch) && isDownTouch && this.pointer == -1)
+        if (CircleBounds.isContains(touch) && isDownTouch && this.pointer == -1){
             this.pointer = pointer;
-        if (CircleBounds.Overlaps(StickBounds) && isDownTouch && pointer == this.pointer)
+        }
+        if (CircleBounds.Overlaps(StickBounds) && isDownTouch && pointer == this.pointer){
             atControl(new Point2D(x, y));
-        if ((!isDownTouch && pointer == this.pointer) || (isDownTouch && pointer == this.pointer && !CircleBounds.Overlaps(StickBounds)))
+        }
+        if ((!isDownTouch && pointer == this.pointer) || (isDownTouch && pointer == this.pointer && !CircleBounds.Overlaps(StickBounds))){
             returnStick();
+        }
     }
 
-    public void atControl(Point2D point) {
-        StickBounds.pos.setPoint(point);
+    public void atControl(Point2D p){
+        StickBounds.pos.setPoint(p);
         float dx = CircleBounds.pos.getX() - StickBounds.pos.getX();
         float dy = CircleBounds.pos.getY() - StickBounds.pos.getY();
-        float dist = (float) Math.sqrt(dx * dx + dy * dy);
+        float dist = (float) Math.sqrt(dx*dx + dy*dy);
         direction.setPoint(-(dx / dist), -(dy / dist));
     }
 

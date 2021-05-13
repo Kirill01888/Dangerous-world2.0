@@ -4,9 +4,11 @@ package com.mygdx.fantastickworld;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.fantastickworld.screen.GameSc;
 import com.mygdx.fantastickworld.screen.MenuState;
 
@@ -21,9 +23,14 @@ public class Main extends Game {
             monsterWalkOnRight, monsterWalkOnLeft, wizardWalkOnLeft,
             wizardWalkOnRight, animation, healthBonus,speedBonus,attackBonus;
     private Music backgroundMusic;
+    public static int Record,TimeRecord;
 
     @Override
     public void create() {
+        if (!Gdx.files.local("rec.txt").exists())Write("0");
+        Record = Read();
+        if (!Gdx.files.local("TRec.txt").exists())Write2("0");
+        TimeRecord = Read2();
         main = new Main();
         HEIGHT = Gdx.graphics.getHeight();
         WIDTH = Gdx.graphics.getWidth();
@@ -61,5 +68,25 @@ public class Main extends Game {
         enemy.dispose();
         place2.dispose();
         backgroundMusic.dispose();
+    }
+
+    public static void Write(String string){
+        FileHandle fileHandle = Gdx.files.local("rec.txt");
+        fileHandle.writeString(string,false);
+    }
+
+    public static int Read(){
+        FileHandle fileHandle = Gdx.files.local("rec.txt");
+        return Integer.parseInt(fileHandle.readString());
+    }
+
+    public static void Write2(String string2){
+        FileHandle fileHandle2 = Gdx.files.local("TRec.txt");
+        fileHandle2.writeString(string2,false);
+    }
+
+    public static int Read2(){
+        FileHandle fileHandle2 = Gdx.files.local("TRec.txt");
+        return Integer.parseInt(fileHandle2.readString());
     }
 }
