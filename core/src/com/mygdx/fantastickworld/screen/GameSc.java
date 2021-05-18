@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.fantastickworld.Actor.Bullet;
 import com.mygdx.fantastickworld.Actor.Enemy;
+import com.mygdx.fantastickworld.Actor.FirstBoss;
 import com.mygdx.fantastickworld.Actor.Player;
 import com.mygdx.fantastickworld.Main;
 import com.mygdx.fantastickworld.PowerUps.AttackBonus;
@@ -54,6 +55,7 @@ public class GameSc implements Screen {
     public SpeedBonusGenerator speedBonusGenerator;
     public AttackBonusGenerator attackBonusGenerator;
     public static Enemy enemy;
+    public static Array<FirstBoss> bossesArray;
 
     public GameSc(Main main) {
         this.main = main;
@@ -136,6 +138,7 @@ public class GameSc implements Screen {
         bulgen = new BulletGenerator();
         enemies = new Array<>();
         bullets = new Array<>();
+        bossesArray = new Array<>();
         enemy = new Enemy(Main.enemy, new Point2D(300 + (float) (Math.random() * 2000), 200 + (float) (Math.random() * 2000)), 1, GameSc.enemyAnimationOnRight);
         attackBonuses = new Array<>();
         attackBonusGenerator = new AttackBonusGenerator(60);
@@ -149,7 +152,7 @@ public class GameSc implements Screen {
         enemyAnimationOnRight = new Animation(new TextureRegion(Main.monsterWalkOnRight), 10, 1f);
         animationWalkOnRight = new Animation(new TextureRegion(Main.wizardWalkOnRight), 5, 0.5f);
         animationWalkOnLeft = new Animation(new TextureRegion(Main.wizardWalkOnLeft), 5, 0.5f);
-        player = new Player(Main.wizardWalkOnRight, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 15, Main.HEIGHT / 10, 100, 0, animationWalkOnRight);
+        player = new Player(null, new Point2D(Main.WIDTH / 2, Main.HEIGHT / 2), 15, Main.HEIGHT / 10, 200, 0, animationWalkOnRight);
         joystick = new Joystick(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         joystick2 = new Joystick2(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         wave = new Wave(1, 1, 1);
@@ -185,6 +188,13 @@ public class GameSc implements Screen {
                 enemies.removeIndex(i);
             }
         }
+        for (int i = 0; i < bossesArray.size; i++) {
+            bossesArray.get(i).update();
+            boolean isD = true;
+            if (bossesArray.get(i).getHealth() < 1){
+                bossesArray.removeIndex(i);
+            }
+        }
         collision();
         wave.update();
         if (player.getHealth() < 1) {
@@ -205,21 +215,12 @@ public class GameSc implements Screen {
 
     public void GameRender(SpriteBatch batch) {
         player.draw(batch);
-        for (int i = 0; i < bullets.size; i++) {
-            bullets.get(i).draw(batch);
-        }
-        for (int i = 0; i < enemies.size; i++) {
-            enemies.get(i).draw(batch);
-        }
-        for (int i = 0; i < healthBonuses.size; i++) {
-            healthBonuses.get(i).draw(batch);
-        }
-        for (int i = 0; i < speedBonus.size; i++) {
-            speedBonus.get(i).draw(batch);
-        }
-        for (int i = 0; i < attackBonuses.size; i++) {
-            attackBonuses.get(i).draw(batch);
-        }
+        for (int i = 0; i < bossesArray.size; i++) {bossesArray.get(i).draw(batch);}
+        for (int i = 0; i < bullets.size; i++) {bullets.get(i).draw(batch);}
+        for (int i = 0; i < enemies.size; i++) {enemies.get(i).draw(batch);}
+        for (int i = 0; i < healthBonuses.size; i++) {healthBonuses.get(i).draw(batch);}
+        for (int i = 0; i < speedBonus.size; i++) {speedBonus.get(i).draw(batch);}
+        for (int i = 0; i < attackBonuses.size; i++) {attackBonuses.get(i).draw(batch);}
         joystick.draw(batch, player);
         joystick2.draw2(batch, player);
         second = (int) ((System.currentTimeMillis() - startTime) / 1000);
@@ -268,6 +269,21 @@ public class GameSc implements Screen {
                 }
             }
         }
+        for (int i = 0; i < bullets.size; i++) {
+            for (int j = 0; j < bossesArray.size; j++) {
+                if (bullets.get(i).bounds.Overlaps(bossesArray.get(j).bounds)) {
+                    bossesArray.get(j).hit();
+                    player.setScore(1);
+                    bullets.removeIndex(i--);
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < bossesArray.size; i++) {
+            if (player.bounds.Overlaps(bossesArray.get(i).bounds)){
+                player.minusHealth(1);
+            }
+        }
         for (int i = 0; i < enemies.size; i++) {
             if (player.bounds.Overlaps(enemies.get(i).bounds)) {
                 player.minusHealth(1);
@@ -275,7 +291,7 @@ public class GameSc implements Screen {
         }
         for (int i = 0; i < healthBonuses.size; i++) {
             if (player.bounds.Overlaps(healthBonuses.get(i).getBounds())) {
-                player.addHealth(20);
+                player.addHealth(40);
                 healthBonuses.removeIndex(i);
             }
         }
@@ -299,19 +315,7 @@ public class GameSc implements Screen {
         }
     }
 
-    /*public void soundUpdate() {
-        boolean isPlay = false;
-        if (joystick2.getDir().y != 0 && joystick2.getDir().x != 0) {
-            isPlay = true;
-            while (isPlay) {
-                fireSound.loop();
-                if (joystick2.getDir().y == 0 && joystick2.getDir().x == 0){
-                    isPlay = false;
-                    fireSound.stop();
-                }
-            }
-        }
-    }*/
+
 
     @Override
     public void resize(int width, int height) {
