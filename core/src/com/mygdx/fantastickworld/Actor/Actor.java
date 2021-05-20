@@ -36,4 +36,8 @@ public abstract class Actor extends GraphicsObj {
     public void setSpeed(float speed) {
         this.speed += speed;
     }
+
+    public float getSpeed() {
+        return speed;
+    }
 }

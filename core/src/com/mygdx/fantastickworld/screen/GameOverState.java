@@ -24,6 +24,12 @@ public class GameOverState implements Screen {
         this.main = main;
         this.score = ScoreString;
         this.time = TimeString;
+        int allTime = Integer.parseInt(TimeString);
+        int minutes = allTime / 60;
+        int seconds = allTime % 60;
+        int TimeRecord = Main.Record;
+        int minutes2 = TimeRecord / 60;
+        int seconds2 = TimeRecord % 60;
         texture = new Texture("magma.png");
         vector3 = new Vector3(Main.camera.position.x = Main.WIDTH / 2,Main.camera.position.y = Main.HEIGHT / 2,Main.camera.position.z = 0);
         bitmapFont1 = new BitmapFont();
@@ -55,11 +61,11 @@ public class GameOverState implements Screen {
             ScoreInfo = "Record: " + Main.Record;
         }
         if (Integer.parseInt(time) > Main.TimeRecord){
-            TimeInfo = "New Time Record!: " + time;
+            TimeInfo = "New Time Record!: " + minutes + ":" + seconds;
             Main.Write2(time);
             Main.TimeRecord = Integer.parseInt(time);
         }else {
-            TimeInfo = "Time Record: " + Main.TimeRecord;
+            TimeInfo = "Time Record: " + minutes2 + ":" + seconds2;
         }
         gl1.setText(bitmapFont1, "Game Over");
         gl2.setText(bitmapFont2, ScoreInfo);

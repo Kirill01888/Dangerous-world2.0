@@ -44,11 +44,10 @@ public class GameSc implements Screen {
     public static Array<SpeedBonus> speedBonus;
     public static Array<AttackBonus> attackBonuses;
     public static Wave wave;
-    private BitmapFont scoreFont, healthFont, timeFont;
-    private GlyphLayout glyphLayout1, glyphLayout2, gl3;
+    private BitmapFont scoreFont, healthFont, timeFont,attackFont,speedFont;
+    private GlyphLayout glyphLayout1, glyphLayout2, gl3,attackGl,speedGl;
     private FreeTypeFontGenerator fontGenerator;
-    private long startTime;
-    public static int second;
+    public static int seconds,minutes;
     private Sound fireSound;
     public static Animation animationWalkOnRight, animationWalkOnLeft, enemyAnimationOnRight, enemyAnimationOnLeft, animation;
     public HealthBonusGenerator healthBonusGenerator;
@@ -56,6 +55,7 @@ public class GameSc implements Screen {
     public AttackBonusGenerator attackBonusGenerator;
     public static Enemy enemy;
     public static Array<FirstBoss> bossesArray;
+    private long startTime = System.currentTimeMillis();
 
     public GameSc(Main main) {
         this.main = main;
@@ -156,13 +156,16 @@ public class GameSc implements Screen {
         joystick = new Joystick(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         joystick2 = new Joystick2(Main.circle, Main.actor, Main.HEIGHT / 3, player);
         wave = new Wave(1, 1, 1);
-        startTime = System.currentTimeMillis();
         scoreFont = new BitmapFont();
         healthFont = new BitmapFont();
         timeFont = new BitmapFont();
+        attackFont = new BitmapFont();
+        speedFont = new BitmapFont();
         glyphLayout1 = new GlyphLayout();
         glyphLayout2 = new GlyphLayout();
         gl3 = new GlyphLayout();
+        attackGl = new GlyphLayout();
+        speedGl = new GlyphLayout();
         fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("a SignboardCpsNr BoldItalic.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = Gdx.graphics.getWidth() / 25;
@@ -170,6 +173,8 @@ public class GameSc implements Screen {
         scoreFont = fontGenerator.generateFont(parameter);
         healthFont = fontGenerator.generateFont(parameter);
         timeFont = fontGenerator.generateFont(parameter);
+        attackFont = fontGenerator.generateFont(parameter);
+        speedFont = fontGenerator.generateFont(parameter);
     }
 
     public void GameUpdate(float delta) {
@@ -190,7 +195,6 @@ public class GameSc implements Screen {
         }
         for (int i = 0; i < bossesArray.size; i++) {
             bossesArray.get(i).update();
-            boolean isD = true;
             if (bossesArray.get(i).getHealth() < 1){
                 bossesArray.removeIndex(i);
             }
@@ -198,8 +202,9 @@ public class GameSc implements Screen {
         collision();
         wave.update();
         if (player.getHealth() < 1) {
+            int allTime = minutes * 60 + seconds;
             String score = Integer.toString(player.getScore());
-            String time = Integer.toString(second);
+            String time = Integer.toString(allTime);
             main.setScreen(new GameOverState(main,score,time));
         }
         playerSideUpdate(joystick);
@@ -223,13 +228,20 @@ public class GameSc implements Screen {
         for (int i = 0; i < attackBonuses.size; i++) {attackBonuses.get(i).draw(batch);}
         joystick.draw(batch, player);
         joystick2.draw2(batch, player);
-        second = (int) ((System.currentTimeMillis() - startTime) / 1000);
+        long totalTime = (startTime - System.currentTimeMillis()) / 1000;
+        minutes = (int) (totalTime / 60);
+        seconds = (int) (totalTime % 60);
+        gl3.setText(timeFont, -minutes + ":" + -seconds);
         scoreFont.draw(batch, glyphLayout1, player.position.getX(), player.position.getY() + 500);
-        healthFont.draw(batch, glyphLayout2, player.position.getX() - Gdx.graphics.getWidth() / 2, player.position.getY() + 500);
-        timeFont.draw(batch, gl3, player.position.getX() + 900, player.position.getY() + 500);
-        gl3.setText(timeFont, second + "");
+        healthFont.draw(batch, glyphLayout2, player.position.getX() + 850, player.position.getY() + 500);
+        timeFont.draw(batch, gl3, player.position.getX() - 1100, player.position.getY() + 500);
+        attackFont.draw(batch,attackGl,player.position.getX() + 850,player.position.getY() + 400);
+        speedFont.draw(batch,speedGl,player.position.getX() + 850,player.position.getY() + 300);
+        gl3.setText(timeFont, seconds + "");
         glyphLayout1.setText(scoreFont, player.getScore() + "");
-        glyphLayout2.setText(healthFont, player.getHealth() + "");
+        glyphLayout2.setText(healthFont, (int)(player.getHealth()) + "");
+        attackGl.setText(attackFont,"atc:" + enemy.getHit());
+        speedGl.setText(speedFont,"spd:" + (int)(player.getSpeed()));
     }
 
     public void CameraUpdate() {
