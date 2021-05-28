@@ -18,7 +18,7 @@ public class Enemy extends Actor {
     public Enemy(Texture img, Point2D position,int rank,Animation animation) {
         super(img, position);
         switch (rank){
-            case 1: R = Main.WIDTH / 30;speed = 20;score = health = 50;break;
+            case 1: R = Main.WIDTH / 33;speed = 20;score = health = 50;break;
             case 2: R = Main.WIDTH / 15;speed = 20;score = health = 70;break;
             case 3: R = Main.WIDTH / 10;speed = 20;score = health = 100;break;
             case 4: R = Main.WIDTH / 5;speed = 20;score = health = 140;break;
@@ -33,7 +33,7 @@ public class Enemy extends Actor {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(animation.getFrame(),position.getX() - R,position.getY() - R,R*2,R * 2);
+        batch.draw(animation.getFrame(),position.getX() - 2*R,position.getY() - R - 20  ,R*2,R * 2);
     }
 
     @Override

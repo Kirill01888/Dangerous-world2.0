@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
-import com.mygdx.fantastickworld.Actor.Player;
 import com.mygdx.fantastickworld.Main;
 
 public class GameOverState implements Screen {
@@ -18,18 +17,16 @@ public class GameOverState implements Screen {
     private BitmapFont bitmapFont1, bitmapFont2,bitmapFont3,bitmapFont4;
     private GlyphLayout gl1, gl2,gl3,gl4;
     private Vector3 vector3;
-    private String score,time;
+    private String score, TimeStringSec,TimeStringMin,allTime;
 
-    public GameOverState(Main main,String ScoreString,String TimeString) {
+    public GameOverState(Main main,String ScoreString,String TimeStringSec,String TimeStringMin,String allTime) {
         this.main = main;
         this.score = ScoreString;
-        this.time = TimeString;
-        int allTime = Integer.parseInt(TimeString);
-        int minutes = allTime / 60;
-        int seconds = allTime % 60;
-        int TimeRecord = Main.Record;
-        int minutes2 = TimeRecord / 60;
-        int seconds2 = TimeRecord % 60;
+        //this.TimeStringSec = TimeStringSec;
+        //this.TimeStringMin = TimeStringMin;
+        this.allTime = allTime;
+        int min1 = Integer.parseInt(TimeStringMin);
+        int sec1 = Integer.parseInt(TimeStringSec);
         texture = new Texture("magma.png");
         vector3 = new Vector3(Main.camera.position.x = Main.WIDTH / 2,Main.camera.position.y = Main.HEIGHT / 2,Main.camera.position.z = 0);
         bitmapFont1 = new BitmapFont();
@@ -60,12 +57,12 @@ public class GameOverState implements Screen {
         }else {
             ScoreInfo = "Record: " + Main.Record;
         }
-        if (Integer.parseInt(time) > Main.TimeRecord){
-            TimeInfo = "New Time Record!: " + minutes + ":" + seconds;
-            Main.Write2(time);
-            Main.TimeRecord = Integer.parseInt(time);
+        if (Integer.parseInt(allTime) > Main.TimeRecord){
+            TimeInfo = "New Time Record!: " + min1 + ":" + sec1;
+            Main.Write2(allTime);
+            Main.TimeRecord = Integer.parseInt(allTime);
         }else {
-            TimeInfo = "Time Record: " + minutes2 + ":" + seconds2;
+            TimeInfo = "Time Record: " + Main.TimeRecord / 60 + ":" + Main.TimeRecord % 60;
         }
         gl1.setText(bitmapFont1, "Game Over");
         gl2.setText(bitmapFont2, ScoreInfo);

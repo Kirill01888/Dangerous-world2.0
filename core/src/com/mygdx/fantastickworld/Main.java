@@ -23,7 +23,7 @@ public class Main extends Game {
             monsterWalkOnRight, monsterWalkOnLeft, wizardWalkOnLeft,
             wizardWalkOnRight, animation, healthBonus,speedBonus,attackBonus;
     private Music backgroundMusic;
-    public static int Record,TimeRecord;
+    public static int Record,TimeRecord,recordMin,recordSec;
 
     @Override
     public void create() {
@@ -31,6 +31,8 @@ public class Main extends Game {
         Record = Read();
         if (!Gdx.files.local("TRec.txt").exists())Write2("0");
         TimeRecord = Read2();
+        recordMin = TimeRecord / 60;
+        recordSec = TimeRecord % 60;
         main = new Main();
         HEIGHT = Gdx.graphics.getHeight();
         WIDTH = Gdx.graphics.getWidth();
@@ -55,7 +57,9 @@ public class Main extends Game {
         actor = new Texture("Stick.png");
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        int record = Read2();
         setScreen(new MenuState(this));
+        Gdx.app.log("Log", "" + record);
     }
 
     @Override
