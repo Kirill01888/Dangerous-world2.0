@@ -1,4 +1,5 @@
 package com.mygdx.fantastickworld.screen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -14,21 +15,19 @@ public class GameOverState implements Screen {
 
     private Main main;
     private Texture texture;
-    private BitmapFont bitmapFont1, bitmapFont2,bitmapFont3,bitmapFont4;
-    private GlyphLayout gl1, gl2,gl3,gl4;
+    private BitmapFont bitmapFont1, bitmapFont2, bitmapFont3, bitmapFont4;
+    private GlyphLayout gl1, gl2, gl3, gl4;
     private Vector3 vector3;
-    private String score, TimeStringSec,TimeStringMin,allTime;
+    private String score;
+    private int Minutes,Seconds;
 
-    public GameOverState(Main main,String ScoreString,String TimeStringSec,String TimeStringMin,String allTime) {
+    public GameOverState(Main main, String Score, String Seconds, String Minutes) {
         this.main = main;
-        this.score = ScoreString;
-        //this.TimeStringSec = TimeStringSec;
-        //this.TimeStringMin = TimeStringMin;
-        this.allTime = allTime;
-        int min1 = Integer.parseInt(TimeStringMin);
-        int sec1 = Integer.parseInt(TimeStringSec);
+        this.score = Score;
+        this.Minutes = Integer.parseInt(Minutes);
+        this.Seconds = Integer.parseInt(Seconds);
         texture = new Texture("magma.png");
-        vector3 = new Vector3(Main.camera.position.x = Main.WIDTH / 2,Main.camera.position.y = Main.HEIGHT / 2,Main.camera.position.z = 0);
+        vector3 = new Vector3(Main.camera.position.x = Main.WIDTH / 2, Main.camera.position.y = Main.HEIGHT / 2, Main.camera.position.z = 0);
         bitmapFont1 = new BitmapFont();
         bitmapFont2 = new BitmapFont();
         bitmapFont3 = new BitmapFont();
@@ -49,20 +48,32 @@ public class GameOverState implements Screen {
         bitmapFont2 = fontGenerator2.generateFont(parameter2);
         bitmapFont3 = fontGenerator2.generateFont(parameter2);
         bitmapFont4 = fontGenerator2.generateFont(parameter2);
-        String ScoreInfo,TimeInfo;
-        if (Integer.parseInt(score) > Main.Record){
+        Gdx.app.log("sec", Seconds);
+        Gdx.app.log("secRec", Main.TimeRecordSec + "");
+        String ScoreInfo, TimeInfo;
+        if (Integer.parseInt(score) > Main.Record) {
             ScoreInfo = "New Record!: " + score;
-            Main.Write(score);
+            Main.WriteScore(score);
             Main.Record = Integer.parseInt(score);
-        }else {
+        } else {
             ScoreInfo = "Record: " + Main.Record;
         }
-        if (Integer.parseInt(allTime) > Main.TimeRecord){
-            TimeInfo = "New Time Record!: " + min1 + ":" + sec1;
-            Main.Write2(allTime);
-            Main.TimeRecord = Integer.parseInt(allTime);
+        if ((this.Minutes > 0 && this.Seconds > 0)) {
+            TimeInfo = "New Time Record!: " + this.Minutes + ":" + this.Seconds;
+            Main.WriteMinRec(Integer.toString(this.Minutes));
+            Main.WriteSecRec(Integer.toString(this.Seconds));
+            Main.TimeRecordMin = this.Minutes;
+            Main.TimeRecordSec = this.Seconds;
+        /*}else if (Integer.parseInt(Minutes) == Main.TimeRecordMin && Integer.parseInt(this.Seconds) > Main.TimeRecordSec) {
+                TimeInfo = "New Time Record!: " + Main.TimeRecordMin + ":" + this.Seconds;
+                Main.WriteSecRec(Seconds);
+                Main.TimeRecordSec = Integer.parseInt(Seconds);
+        }else if (Integer.parseInt(this.Minutes) > Main.TimeRecordMin && Integer.parseInt(this.Seconds) == Main.TimeRecordSec) {
+                TimeInfo = "New Time Record!: " + this.Minutes + ":" + Main.TimeRecordSec;
+                Main.WriteMinRec(this.Minutes);
+                Main.TimeRecordMin = Integer.parseInt(this.Minutes);*/
         }else {
-            TimeInfo = "Time Record: " + Main.TimeRecord / 60 + ":" + Main.TimeRecord % 60;
+            TimeInfo = "Time Record: " + Main.TimeRecordMin + ":" + Main.TimeRecordMin;
         }
         gl1.setText(bitmapFont1, "Game Over");
         gl2.setText(bitmapFont2, ScoreInfo);
@@ -82,13 +93,13 @@ public class GameOverState implements Screen {
         Main.batch.setProjectionMatrix(Main.camera.combined);
         Main.camera.update();
         Main.batch.begin();
-        Main.batch.draw(texture,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        bitmapFont1.draw(Main.batch,gl1,Main.WIDTH / 2 - gl1.width / 2,Main.HEIGHT  - gl1.height);
-        bitmapFont2.draw(Main.batch,gl2,Main.WIDTH / 2 - gl2.width / 2,Main.HEIGHT / 2 - gl2.height * 2);
-        bitmapFont3.draw(Main.batch,gl3,Main.WIDTH / 2 - gl3.width / 2,Main.HEIGHT / 2 - gl3.height * 3.5f);
-        bitmapFont4.draw(Main.batch,gl4,Main.WIDTH / 2 - gl4.width / 2,Main.HEIGHT / 2 - gl4.height * 5);
+        Main.batch.draw(texture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        bitmapFont1.draw(Main.batch, gl1, Main.WIDTH / 2 - gl1.width / 2, Main.HEIGHT - gl1.height);
+        bitmapFont2.draw(Main.batch, gl2, Main.WIDTH / 2 - gl2.width / 2, Main.HEIGHT / 2 - gl2.height * 2);
+        bitmapFont3.draw(Main.batch, gl3, Main.WIDTH / 2 - gl3.width / 2, Main.HEIGHT / 2 - gl3.height * 3.5f);
+        bitmapFont4.draw(Main.batch, gl4, Main.WIDTH / 2 - gl4.width / 2, Main.HEIGHT / 2 - gl4.height * 5);
         Main.batch.end();
-        if (Gdx.input.justTouched()){
+        if (Gdx.input.justTouched()) {
             main.setScreen(new GameSc(main));
         }
     }

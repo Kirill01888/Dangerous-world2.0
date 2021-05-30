@@ -203,11 +203,9 @@ public class GameSc implements Screen {
         wave.update();
         if (player.getHealth() < 1) {
             String score = Integer.toString(player.getScore());
-            int allTimer = minutes * 60 + minutes;
-            String allTime = Integer.toString(allTimer);
             String timeM = Integer.toString(minutes);
             String timeS = Integer.toString(seconds);
-            main.setScreen(new GameOverState(main,score,timeS,timeM,allTime));
+            main.setScreen(new GameOverState(main,score,timeS,timeM));
         }
         playerSideUpdate(joystick);
         animation.update(delta);

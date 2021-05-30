@@ -8,8 +8,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.mygdx.fantastickworld.screen.GameSc;
 import com.mygdx.fantastickworld.screen.MenuState;
 
 public class Main extends Game {
@@ -23,16 +21,16 @@ public class Main extends Game {
             monsterWalkOnRight, monsterWalkOnLeft, wizardWalkOnLeft,
             wizardWalkOnRight, animation, healthBonus,speedBonus,attackBonus;
     private Music backgroundMusic;
-    public static int Record,TimeRecord,recordMin,recordSec;
+    public static int Record, TimeRecordMin,TimeRecordSec;
 
     @Override
     public void create() {
-        if (!Gdx.files.local("rec.txt").exists())Write("0");
-        Record = Read();
-        if (!Gdx.files.local("TRec.txt").exists())Write2("0");
-        TimeRecord = Read2();
-        recordMin = TimeRecord / 60;
-        recordSec = TimeRecord % 60;
+        if (!Gdx.files.local("rec.txt").exists()) WriteScore("0");
+        Record = ReadScore();
+        if (!Gdx.files.local("MinRec.txt").exists()) WriteMinRec("0");
+        TimeRecordMin = ReadMinRec();
+        if (!Gdx.files.local("SecRec.txt").exists()) WriteSecRec("0");
+        TimeRecordSec = ReadSecRec();
         main = new Main();
         HEIGHT = Gdx.graphics.getHeight();
         WIDTH = Gdx.graphics.getWidth();
@@ -57,9 +55,8 @@ public class Main extends Game {
         actor = new Texture("Stick.png");
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        int record = Read2();
         setScreen(new MenuState(this));
-        Gdx.app.log("Log", "" + record);
+
     }
 
     @Override
@@ -74,23 +71,32 @@ public class Main extends Game {
         backgroundMusic.dispose();
     }
 
-    public static void Write(String string){
+    public static void WriteScore(String string){
         FileHandle fileHandle = Gdx.files.local("rec.txt");
         fileHandle.writeString(string,false);
     }
 
-    public static int Read(){
+    public static int ReadScore(){
         FileHandle fileHandle = Gdx.files.local("rec.txt");
         return Integer.parseInt(fileHandle.readString());
     }
 
-    public static void Write2(String string2){
-        FileHandle fileHandle2 = Gdx.files.local("TRec.txt");
-        fileHandle2.writeString(string2,false);
+    public static void WriteMinRec(String minutes){
+        FileHandle fileHandle = Gdx.files.local("MinRec.txt");
+        fileHandle.writeString(minutes,false);
+    }
+    public static void WriteSecRec(String seconds){
+        FileHandle fileHandle = Gdx.files.local("SecRec.txt");
+        fileHandle.writeString(seconds,false);
     }
 
-    public static int Read2(){
-        FileHandle fileHandle2 = Gdx.files.local("TRec.txt");
-        return Integer.parseInt(fileHandle2.readString());
+    public static int ReadMinRec(){
+        FileHandle fileHandle = Gdx.files.local("MinRec.txt");
+        return Integer.parseInt(fileHandle.readString());
+    }
+
+    public static int ReadSecRec(){
+        FileHandle fileHandle = Gdx.files.local("SecRec.txt");
+        return Integer.parseInt(fileHandle.readString());
     }
 }
