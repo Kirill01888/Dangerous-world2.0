@@ -48,9 +48,7 @@ public class GameOverState implements Screen {
         bitmapFont2 = fontGenerator2.generateFont(parameter2);
         bitmapFont3 = fontGenerator2.generateFont(parameter2);
         bitmapFont4 = fontGenerator2.generateFont(parameter2);
-        Gdx.app.log("sec", Seconds);
-        Gdx.app.log("secRec", Main.TimeRecordSec + "");
-        String ScoreInfo, TimeInfo;
+        String ScoreInfo;
         if (Integer.parseInt(score) > Main.Record) {
             ScoreInfo = "New Record!: " + score;
             Main.WriteScore(score);
@@ -58,26 +56,11 @@ public class GameOverState implements Screen {
         } else {
             ScoreInfo = "Record: " + Main.Record;
         }
-        if ((this.Minutes > 0 && this.Seconds > 0)) {
-            TimeInfo = "New Time Record!: " + this.Minutes + ":" + this.Seconds;
-            Main.WriteMinRec(Integer.toString(this.Minutes));
-            Main.WriteSecRec(Integer.toString(this.Seconds));
-            Main.TimeRecordMin = this.Minutes;
-            Main.TimeRecordSec = this.Seconds;
-        /*}else if (Integer.parseInt(Minutes) == Main.TimeRecordMin && Integer.parseInt(this.Seconds) > Main.TimeRecordSec) {
-                TimeInfo = "New Time Record!: " + Main.TimeRecordMin + ":" + this.Seconds;
-                Main.WriteSecRec(Seconds);
-                Main.TimeRecordSec = Integer.parseInt(Seconds);
-        }else if (Integer.parseInt(this.Minutes) > Main.TimeRecordMin && Integer.parseInt(this.Seconds) == Main.TimeRecordSec) {
-                TimeInfo = "New Time Record!: " + this.Minutes + ":" + Main.TimeRecordSec;
-                Main.WriteMinRec(this.Minutes);
-                Main.TimeRecordMin = Integer.parseInt(this.Minutes);*/
-        }else {
-            TimeInfo = "Time Record: " + Main.TimeRecordMin + ":" + Main.TimeRecordMin;
-        }
+        int minutes = Integer.parseInt(Minutes);
+        int seconds = Integer.parseInt(Seconds);
         gl1.setText(bitmapFont1, "Game Over");
         gl2.setText(bitmapFont2, ScoreInfo);
-        gl3.setText(bitmapFont3, TimeInfo);
+        gl3.setText(bitmapFont3,  "Time: " + -minutes + ":" + -seconds);
         gl4.setText(bitmapFont4, "Tap to start");
     }
 

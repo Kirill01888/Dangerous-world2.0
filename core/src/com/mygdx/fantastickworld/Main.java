@@ -21,16 +21,12 @@ public class Main extends Game {
             monsterWalkOnRight, monsterWalkOnLeft, wizardWalkOnLeft,
             wizardWalkOnRight, animation, healthBonus,speedBonus,attackBonus;
     private Music backgroundMusic;
-    public static int Record, TimeRecordMin,TimeRecordSec;
+    public static int Record;
 
     @Override
     public void create() {
         if (!Gdx.files.local("rec.txt").exists()) WriteScore("0");
         Record = ReadScore();
-        if (!Gdx.files.local("MinRec.txt").exists()) WriteMinRec("0");
-        TimeRecordMin = ReadMinRec();
-        if (!Gdx.files.local("SecRec.txt").exists()) WriteSecRec("0");
-        TimeRecordSec = ReadSecRec();
         main = new Main();
         HEIGHT = Gdx.graphics.getHeight();
         WIDTH = Gdx.graphics.getWidth();
@@ -78,25 +74,6 @@ public class Main extends Game {
 
     public static int ReadScore(){
         FileHandle fileHandle = Gdx.files.local("rec.txt");
-        return Integer.parseInt(fileHandle.readString());
-    }
-
-    public static void WriteMinRec(String minutes){
-        FileHandle fileHandle = Gdx.files.local("MinRec.txt");
-        fileHandle.writeString(minutes,false);
-    }
-    public static void WriteSecRec(String seconds){
-        FileHandle fileHandle = Gdx.files.local("SecRec.txt");
-        fileHandle.writeString(seconds,false);
-    }
-
-    public static int ReadMinRec(){
-        FileHandle fileHandle = Gdx.files.local("MinRec.txt");
-        return Integer.parseInt(fileHandle.readString());
-    }
-
-    public static int ReadSecRec(){
-        FileHandle fileHandle = Gdx.files.local("SecRec.txt");
         return Integer.parseInt(fileHandle.readString());
     }
 }
